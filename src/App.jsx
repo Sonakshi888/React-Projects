@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Board from './components/Board';
 import History from './components/History';
+import StatusMessage from './components/StatusMessage';
 import './styles/root.scss';
 import { calculateWinner } from './helpers';
 
@@ -12,13 +13,9 @@ const App = () => {
   }]);
   const [currentMove, setCurrentMove] = useState(0);
   const current = history[currentMove]; //setting current with the object history (key = currentMove)(current = history[0] in first go)
-  
+
   const winner = calculateWinner(current.board);  //history[0].board
   
-  const message = winner
-    ? `Winner is ${winner}`
-    : `Next player is ${current.isXNext ? 'X' : 'O'}`;
-
   /** function to handle click on each sqaure */
   //position is the position of clicked square, pos is the position of iterated square
   const handleSquareClick = position => {
@@ -43,14 +40,13 @@ const App = () => {
 
   /** function to execute when the go to move number is clicked to show the respective move */
   const moveTo = (move) => {
-    console.log(move);
     setCurrentMove(move);
   }
 
   return (
     <div className="app">
       <h1>TIC TAC TOE</h1>
-      <h2>{message}</h2>
+      <StatusMessage winner={winner} current={current}/>
       <Board board={current.board} handleSquareClick={handleSquareClick} />
       <History history={history} moveTo={moveTo} currentMove={currentMove}/>
     </div>
