@@ -5,17 +5,20 @@ import StatusMessage from './components/StatusMessage';
 import './styles/root.scss';
 import { calculateWinner } from './helpers';
 
-const App = () => {
-  //history here is an array with objects inside it
-  const [history, setHistory] = useState([{
+const NEW_GAME = [
+  {
     board: Array(9).fill(null),
     isXNext: true,
-  }]);
+  },
+];
+const App = () => {
+  //history here is an array with objects inside it
+  const [history, setHistory] = useState(NEW_GAME);
   const [currentMove, setCurrentMove] = useState(0);
   const current = history[currentMove]; //setting current with the object history (key = currentMove)(current = history[0] in first go)
 
-  const winner = calculateWinner(current.board);  //history[0].board
-  
+  const { winner, winningSquares } = calculateWinner(current.board); //history[0].board
+
   /** function to handle click on each sqaure */
   //position is the position of clicked square, pos is the position of iterated square
   const handleSquareClick = position => {
@@ -39,16 +42,26 @@ const App = () => {
   };
 
   /** function to execute when the go to move number is clicked to show the respective move */
-  const moveTo = (move) => {
+  const moveTo = move => {
     setCurrentMove(move);
-  }
+  };
 
+  /** function to set the new game */
+  const setNewGame = () => {
+    setHistory(NEW_GAME);
+    setCurrentMove(0);
+  };
   return (
     <div className="app">
       <h1>TIC TAC TOE</h1>
-      <StatusMessage winner={winner} current={current}/>
-      <Board board={current.board} handleSquareClick={handleSquareClick} />
-      <History history={history} moveTo={moveTo} currentMove={currentMove}/>
+      <StatusMessage winner={winner} current={current} />
+      <Board
+        board={current.board}
+        handleSquareClick={handleSquareClick}
+        winningSquares={winningSquares}
+      />
+      <button onClick={setNewGame}>Start new game</button>
+      <History history={history} moveTo={moveTo} currentMove={currentMove} />
     </div>
   );
 };

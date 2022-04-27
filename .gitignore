@@ -3,3 +3,5 @@ dist
 .cache
 .eslintrc
 .prettierrc
+debug.log
+.eslintrc
