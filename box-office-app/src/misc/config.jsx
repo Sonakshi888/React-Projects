@@ -6,6 +6,8 @@ export async function apiGet(queryString) {
   );
   return response;
 }
+
+/** easier way to fetch the results from the api, code to be placed directly inside home.jsx */
 // fetch(`https://api.tvmaze.com/search/shows?q=${input}`)
 //   .then(r => r.json())
 //   .then(result => {
