@@ -1,5 +1,9 @@
 import React, { useEffect, useReducer } from 'react';
 import { useParams } from 'react-router-dom';
+import ShowMainData from '../components/shows/ShowMainData';
+import Cast from '../components/shows/Cast';
+import Seasons from '../components/shows/Seasons';
+import Details from '../components/shows/Details';
 import { apiGet } from '../misc/config';
 
 const Show = () => {
@@ -49,7 +53,33 @@ const Show = () => {
   if (error) {
     return <div>Error occured: ${error}</div>;
   }
-  return <div>Show</div>;
+  return (
+    <div>
+      <ShowMainData
+        image={show.image}
+        name={show.name}
+        summary={show.summary}
+        rating={show.rating}
+        tags={show.tags}
+      />
+      <div>
+        <h2>Details</h2>
+        <Details
+          status={show.status}
+          network={show.network}
+          premiered={show.premiered}
+        />
+      </div>
+      <div>
+        <h2>Seasons</h2>
+        <Seasons seasons={show._embedded.seasons} />
+      </div>
+      <div>
+        <h2>Cast</h2>
+        <Cast cast={show._embedded.cast} />
+      </div>
+    </div>
+  );
 };
 
 export default Show;
