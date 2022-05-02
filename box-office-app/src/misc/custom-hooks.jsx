@@ -1,5 +1,6 @@
 import { useReducer, useEffect } from 'react';
 
+//reducer for useShows
 function showsReducer(prevState, action) {
   switch (action.type) {
     case 'ADD': {
@@ -27,6 +28,7 @@ function usePersistentReducer(reducer, initialState, key) {
   return [state, dispatch];
 }
 
+//function to use usePersistentReducer with only one parameter
 export function useShows(key = 'shows') {
-  usePersistentReducer(showsReducer, [], key);
+  return usePersistentReducer(showsReducer, [], key);
 }
