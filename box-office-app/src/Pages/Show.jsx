@@ -5,6 +5,8 @@ import Cast from '../components/shows/Cast';
 import Seasons from '../components/shows/Seasons';
 import Details from '../components/shows/Details';
 import { apiGet } from '../misc/config';
+import { ShowPageWrapper } from './Show.styled';
+import { InfoBlock } from './Show.styled';
 
 const Show = () => {
   const initialState = {
@@ -34,11 +36,9 @@ const Show = () => {
 
     apiGet(`/shows/${id}?embed[]=seasons&embed[]=cast`)
       .then(results => {
-        setTimeout(() => {
-          if (isMounted === true) {
-            dispatch({ type: 'FETCH_SUCCESS', show: results });
-          }
-        }, 1000);
+        if (isMounted === true) {
+          dispatch({ type: 'FETCH_SUCCESS', show: results });
+        }
       })
       .catch(err => {
         if (isMounted === true) {
@@ -46,15 +46,11 @@ const Show = () => {
         }
       });
   }, [id]);
-  console.log(show);
   if (isLoading) {
     return <div>Data is being loaded!</div>;
   }
-  if (error) {
-    return <div>Error occured: ${error}</div>;
-  }
   return (
-    <div>
+    <ShowPageWrapper>
       <ShowMainData
         image={show.image}
         name={show.name}
@@ -62,23 +58,23 @@ const Show = () => {
         rating={show.rating}
         tags={show.tags}
       />
-      <div>
+      <InfoBlock>
         <h2>Details</h2>
         <Details
           status={show.status}
           network={show.network}
           premiered={show.premiered}
         />
-      </div>
-      <div>
+      </InfoBlock>
+      <InfoBlock>
         <h2>Seasons</h2>
         <Seasons seasons={show._embedded.seasons} />
-      </div>
-      <div>
+      </InfoBlock>
+      <InfoBlock>
         <h2>Cast</h2>
         <Cast cast={show._embedded.cast} />
-      </div>
-    </div>
+      </InfoBlock>
+    </ShowPageWrapper>
   );
 };
 
