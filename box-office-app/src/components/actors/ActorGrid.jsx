@@ -15,7 +15,7 @@ const ActorGrid = ({ data }) => {
           birthday={person.birthday}
           deathday={person.deathday}
           gender={person.gender}
-          image={person.image ? person.image : IMAGE_NOT_FOUND}
+          image={person.image ? person.image.medium : IMAGE_NOT_FOUND}
         />
       ))}
     </FlexGrid>
