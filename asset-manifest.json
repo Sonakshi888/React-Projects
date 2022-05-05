@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/React-Projects/static/css/main.b2586571.css",
+    "main.js": "/React-Projects/static/js/main.d30dfa52.js",
+    "static/js/377.905fb7b0.chunk.js": "/React-Projects/static/js/377.905fb7b0.chunk.js",
+    "service-worker.js": "/React-Projects/service-worker.js",
+    "index.html": "/React-Projects/index.html",
+    "main.b2586571.css.map": "/React-Projects/static/css/main.b2586571.css.map",
+    "main.d30dfa52.js.map": "/React-Projects/static/js/main.d30dfa52.js.map",
+    "377.905fb7b0.chunk.js.map": "/React-Projects/static/js/377.905fb7b0.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b2586571.css",
+    "static/js/main.d30dfa52.js"
+  ]
+}
