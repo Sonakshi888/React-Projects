@@ -40,7 +40,6 @@ export const ProfileProvider = ({ children }) => {
       }
     };
   }, []);
-  console.log("gggg", profile);
   return (
     <ProfileContext.Provider value={{ isloading, profile }}>
       {children}
