@@ -8,6 +8,7 @@ export const ProfileProvider = ({ children }) => {
 
   useEffect(() => {
     let userRef;
+    //adding real time listener which will run everytime anything changes inside the path specified
     const authUnsub = auth.onAuthStateChanged((authObj) => {
       //onAuthStateChanged works for logged in user
       if (authObj) {
@@ -15,7 +16,6 @@ export const ProfileProvider = ({ children }) => {
         userRef.on("value", (snap) => {
           const profileData = snap.val();
           const { name, createdAt } = snap.val();
-          console.log(profileData);
           const data = {
             name,
             createdAt,
