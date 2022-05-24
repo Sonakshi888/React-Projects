@@ -41,7 +41,7 @@ const CreateRoomBtnModal = () => {
 
   /** when the form is submitted */
   const onSubmit = async () => {
-    /** if validation is false, check is the function of rsuite function */
+    /** if validation is false, current is the function of useRef function */
     if (!formRef.current.check()) {
       return;
     }
