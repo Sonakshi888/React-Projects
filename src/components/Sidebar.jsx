@@ -5,18 +5,18 @@ import DashboardToggle from "./dashboard/DashboardToggle";
 import ChatRoomList from "./rooms/ChatRoomList";
 
 const Sidebar = () => {
-  const topSideBar = useRef();
+  const topSideBarRef = useRef();
   const [height, setHeight] = useState(0);
 
   useEffect(() => {
-    if (topSideBar.current) {
-      setHeight(topSideBar.current.scrollHeight);
+    if (topSideBarRef.current) {
+      setHeight(topSideBarRef.current.scrollHeight);
     }
-  }, [topSideBar]);
+  }, [topSideBarRef]);
 
   return (
     <div className="h-100 pt-2">
-      <div ref={topSideBar}>
+      <div ref={topSideBarRef}>
         <DashboardToggle />
         <CreateRoomBtnModal />
         <Divider>Join Conversation</Divider>
