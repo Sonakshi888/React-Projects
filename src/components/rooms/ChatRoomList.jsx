@@ -21,9 +21,11 @@ const ChatRoomList = ({ aboveElHeight }) => {
       }}
       activeKey={location.pathname}
     >
+      {/* if we have no rooms */}
       {!rooms && (
         <Loader content="Loading..." center vertical speed="slow" size="md" />
       )}
+      {/* when rooms is available */}
       {rooms &&
         rooms.length > 0 &&
         rooms.map((room) => (
