@@ -1,4 +1,4 @@
-import React from "react";
+import React, {memo} from "react";
 import { Button, Modal } from "rsuite";
 import ModalBody from "rsuite/lib/Modal/ModalBody";
 import ModalFooter from "rsuite/lib/Modal/ModalFooter";
@@ -33,4 +33,4 @@ const RoomInfoBtnModal = () => {
   );
 };
 
-export default RoomInfoBtnModal;
+export default memo(RoomInfoBtnModal);
