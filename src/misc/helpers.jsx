@@ -15,3 +15,36 @@ export function transformToArrayWithId(snapVal) {
       })
     : [];
 }
+/** function to update name and avatar of user at all the needed places at once using promises */
+export async function getUserUpdates(userId, keyToUpdate, value, db) {
+  const updates = {};
+
+  // updating the profile
+  updates[`/profiles/${userId}/${keyToUpdate}`] = value;
+
+  // in order to update the name and profile avatar we need to first get the msgs and rooms object from database
+  const getMsgs = db
+    .ref("/messages")
+    .orderByChild("author/uid")
+    .equalTo(userId)
+    .once('value');
+
+  const getRooms = db
+    .ref("/rooms")
+    .orderByChild("lastMessage/author/uid")
+    .equalTo(userId)
+    .once('value');
+
+  const [mSnap, rSnap] = await Promise.all([getMsgs, getRooms]); //getting snapshot of  msgs and rooms objects
+
+  //updating msg object at last
+  mSnap.forEach((msgSnap) => {
+    updates[`/messages/${msgSnap.key}/author/${keyToUpdate}`] = value;
+  });
+
+  //updating rooms object at last
+  rSnap.forEach((roomSnap) => {
+    updates[`/rooms/${roomSnap.key}/lastMessage/author/${keyToUpdate}`] = value;
+  });
+  return updates;
+}
