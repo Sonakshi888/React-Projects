@@ -7,7 +7,11 @@ export function getNameInitials(name) {
   return splitName[0][0];
 }
 
-/** function to get the json data from the firebase and convert it into an array */
+/** function to get the json data from firebase and convert it into an array */
+export function transformToArray(snapVal) {
+  return snapVal ? Object.keys(snapVal) : [];
+}
+/** function to get the json data from the firebase and convert it into an array with the help of an id*/
 export function transformToArrayWithId(snapVal) {
   return snapVal
     ? Object.keys(snapVal).map((roomId) => {
@@ -27,13 +31,13 @@ export async function getUserUpdates(userId, keyToUpdate, value, db) {
     .ref("/messages")
     .orderByChild("author/uid")
     .equalTo(userId)
-    .once('value');
+    .once("value");
 
   const getRooms = db
     .ref("/rooms")
     .orderByChild("lastMessage/author/uid")
     .equalTo(userId)
-    .once('value');
+    .once("value");
 
   const [mSnap, rSnap] = await Promise.all([getMsgs, getRooms]); //getting snapshot of  msgs and rooms objects
 

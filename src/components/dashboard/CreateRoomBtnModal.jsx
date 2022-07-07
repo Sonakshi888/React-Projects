@@ -1,4 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
+import { auth } from "../../misc/firebase";
 import {
   Button,
   Modal,
@@ -30,7 +31,6 @@ const INITIAL_FORM = {
 const CreateRoomBtnModal = () => {
   const { isOpen, open, close } = useModalState();
   const [formValue, setFormValue] = useState(INITIAL_FORM);
-  // console.log("formValue", formValue);
   const [isLoading, setIsLoading] = useState(false);
   const formRef = useRef();
 
@@ -50,6 +50,9 @@ const CreateRoomBtnModal = () => {
     const newRoomdata = {
       ...formValue,
       createdAt: firebase.database.ServerValue.TIMESTAMP,
+      admins: {
+        [auth.currentUser.uid]: true, //setting the current user as admin when the user creates a room
+      },
     };
     try {
       await database.ref("rooms").push(newRoomdata);

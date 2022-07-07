@@ -6,6 +6,8 @@ import { useParams } from "react-router";
 import { useRooms } from "../context/rooms.context";
 import { Loader } from "rsuite";
 import { CurrentRoomRovider } from "../context/current-room.context";
+import { transformToArray } from "../misc/helpers";
+import { auth } from "../misc/firebase";
 
 function Chat() {
   const { chatId } = useParams(); //extract chat id from parameters sent from Home component
@@ -19,10 +21,14 @@ function Chat() {
     return <h6 className="text-center mt-page">Chat {chatId} not found!</h6>;
   }
 
-  const { name, description } = currentRoom;    //destructring
+  const { name, description } = currentRoom; //destructring
+  const admins = transformToArray(currentRoom.admins); //calling transformToArray to get admin outside of an object
+  const isAdmin = admins.includes(auth.currentUser.uid); //checking if the current user is an admin
   const currentRoomData = {
     name,
     description,
+    admins,
+    isAdmin,
   };
 
   return (
