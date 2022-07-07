@@ -33,7 +33,7 @@ export const ProfileProvider = ({ children }) => {
         userRef = database.ref(`/profiles/${authObj.uid}`);
         userRef.on("value", (snap) => {
           const profileData = snap.val();
-          const { name, createdAt, avatar } = snap.val();
+          const { name, createdAt, avatar } = profileData;
           const data = {
             name,
             avatar,
@@ -50,7 +50,7 @@ export const ProfileProvider = ({ children }) => {
         // and `false` when disconnected.
         database.ref(".info/connected").on("value", (snapshot) => {
           // If we're not currently connected, don't do anything.
-          if (snapshot.val() === false) {
+          if (!!snapshot.val() === false) { //snapshot will not always be an object so to convert snapshot.val to object we used !!
             return;
           }
 
