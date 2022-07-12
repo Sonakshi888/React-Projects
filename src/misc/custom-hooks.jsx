@@ -37,7 +37,6 @@ export function usePresence(uid) {
 
   useEffect(() => {
     const userStatusRef = database.ref(`/status/${uid}`); //getting the user status data
-    console.log(userStatusRef);
     userStatusRef.on("value", (snap) => { //adding real time listener on value
       if (snap.exists()) {
         const data = snap.val();  //get the snap value into data
