@@ -88,6 +88,45 @@ const Messages = () => {
     Alert.info(alertMsg, 4000);
   }, []);
 
+  /** function to delete a message */
+  const handleDelete = useCallback(
+    async (msgId) => {
+      if (!window.confirm("Delete this message?")) {
+        return;
+      }
+
+      /** checking if msg to be deleted is last msg by getting the id of last message and comparing it with the current msg chosen to be deleted */
+      const isLast = messages[messages.length - 1].id === msgId;
+
+      //initializing an empty object to perform atomic function
+      const updates = {};
+
+      updates[`messages/${msgId}`] = null; //to delete the msg
+
+      /** if msg is last msg and is not the only msg left */
+      if (isLast && messages.length > 1) {
+        updates[`/rooms/${chatId}/lastMessage`] = {
+          ...messages[messages.length - 2],
+          msgId: messages[messages.length - 2].id,
+        };
+      }
+
+      /**if msg is last msg and is the only msg left */
+      if (isLast && messages.length === 1) {
+        updates[`/rooms/${chatId}/lastMessage`] = null;
+      }
+
+      /** updating the database with update method */
+      try {
+        await database.ref().update(updates);
+        Alert.info("Message Deleted!", 4000);
+      } catch (err) {
+        Alert.error(err.message);
+      }
+    },
+    [chatId, messages]
+  );
+
   return (
     <ul className="msg-list custom-scroll">
       {isChatEmpty && <li>No messages yet!</li>}
@@ -98,6 +137,7 @@ const Messages = () => {
             message={msg}
             handleAdmin={handleAdmin}
             handleLike={handleLike}
+            handleDelete={handleDelete}
           />
         ))}
     </ul>

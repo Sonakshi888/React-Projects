@@ -21,9 +21,9 @@ const IconBtnControl = ({
       <ConditionalBadge condition={badgeContent}>
         <Whisper
           placement="top"
-          delay={0}
-          delayHide={0}
-          delayShow={0}
+        //   delay={0}
+        //   delayHide={0}
+        //   delayShow={0}
           trigger="hover"
           speaker={<Tooltip>{tooltip}</Tooltip>}
         >

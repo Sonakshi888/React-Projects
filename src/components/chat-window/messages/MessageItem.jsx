@@ -9,7 +9,7 @@ import { Button } from "rsuite";
 import IconBtnControl from "./IconBtnControl";
 import { useMediaQuery } from "../../../misc/custom-hooks";
 
-const MessageItem = ({ message, handleAdmin, handleLike }) => {
+const MessageItem = ({ message, handleAdmin, handleLike, handleDelete }) => {
   const { author, createdAt, text, likes, likeCount } = message;
 
   // consts to manage the grant permissions
@@ -24,6 +24,7 @@ const MessageItem = ({ message, handleAdmin, handleLike }) => {
   // const to manage the like functionality
   const isMobile = useMediaQuery("(max-width: 992px)");
   // const [selfRef, isHovered] = useHover();
+  
   //if likes exist and getting the keys of likes object and finding if current user has liked the message
   const isLiked = likes && Object.keys(likes).includes(auth.currentUser.uid);
   // const canShowIcons = isMobile || isHovered;
@@ -33,7 +34,7 @@ const MessageItem = ({ message, handleAdmin, handleLike }) => {
     //   className={`padded mb-1 cursor-pointer ${isHovered ? "bg-black-02" : ""}`}
     //   ref={selfRef}
     // >
-      <li className="padded mb-1">
+    <li className="padded mb-1">
       <div className="d-flex align-items-center font-bolder mb-1">
         <PresenceDot uid={author.uid} />
         <ProfileAvatar
@@ -61,10 +62,19 @@ const MessageItem = ({ message, handleAdmin, handleLike }) => {
           // isVisible={canShowIcons}
           isVisible
           iconName="heart"
-          tooltop="Like this message"
+          tooltip="Like this message"
           onClick={() => handleLike(message.id)}
           badgeContent={likeCount}
         />
+        {isAuthor && (
+          <IconBtnControl
+            // isVisible={canShowIcons}
+            isVisible
+            iconName="close"
+            tooltip="Delete this message"
+            onClick={() => handleDelete(message.id)}
+          />
+        )}
       </div>
       <div>
         <span className="word-break-all">{text}</span>
