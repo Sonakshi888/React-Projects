@@ -7,6 +7,7 @@ import { Alert } from "rsuite";
 import { database } from "../../../misc/firebase";
 import { transformToArrayWithId } from "../../../misc/helpers";
 import MessageItem from "./MessageItem";
+import { auth } from "../../../misc/firebase";
 
 const Messages = () => {
   const { chatId } = useParams();
@@ -39,7 +40,7 @@ const Messages = () => {
       const adminsRef = database.ref(`/rooms/${chatId}/admins`);
       let alertMsg;
 
-      await adminsRef.transaction(admins => {
+      await adminsRef.transaction((admins) => {
         if (admins) {
           if (admins[uid]) {
             admins[uid] = null; //making uid null will delete the record from firebase as it does not stores null records
@@ -57,12 +58,47 @@ const Messages = () => {
     [chatId]
   );
 
+  const handleLike = useCallback(async (msgId) => {
+    const { uid } = auth.currentUser;
+    const messageRef = database.ref(`/messages/${msgId}`);
+    let alertMsg;
+
+    await messageRef.transaction((msg) => {
+      if (msg) {
+        // if msg.likes exist and current user has liked it
+        if (msg.likes && msg.likes[uid]) {
+          msg.likeCount -= 1;
+          msg.likes[uid] = null; //making uid null will delete the record from firebase as it does not stores null records
+          alertMsg = "Message Unliked!";
+        } else {
+          msg.likeCount += 1;
+
+          // if msg.likes does not exist(no one hasliked that msg) then initialize it
+          if (!msg.likes) {
+            msg.likes = {};
+          }
+
+          msg.likes[uid] = true;
+          alertMsg = "Message Liked!";
+        }
+      }
+      return msg;
+    });
+
+    Alert.info(alertMsg, 4000);
+  }, []);
+
   return (
     <ul className="msg-list custom-scroll">
       {isChatEmpty && <li>No messages yet!</li>}
       {canShowMessage &&
         messages.map((msg) => (
-          <MessageItem key={msg.id} message={msg} handleAdmin={handleAdmin} />
+          <MessageItem
+            key={msg.id}
+            message={msg}
+            handleAdmin={handleAdmin}
+            handleLike={handleLike}
+          />
         ))}
     </ul>
   );
