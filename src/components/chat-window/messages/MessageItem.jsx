@@ -1,18 +1,18 @@
 import React, { memo } from "react";
 import ProfileAvatar from "../../ProfileAvatar";
 import TimeAgo from "react-timeago";
+import { Button } from "rsuite";
 import ProfileInfoBtnModal from "./ProfileInfoBtnModal";
 import PresenceDot from "../../PresenceDot";
 import { useCurrentRoom } from "../../../context/current-room.context";
 import { auth } from "../../../misc/firebase";
-import { Button } from "rsuite";
 import IconBtnControl from "./IconBtnControl";
-import { useMediaQuery } from "../../../misc/custom-hooks";
+import { useMediaQuery, useHover } from "../../../misc/custom-hooks";
 
 const MessageItem = ({ message, handleAdmin, handleLike, handleDelete }) => {
   const { author, createdAt, text, likes, likeCount } = message;
 
-  // consts to manage the grant permissions
+  /** consts to manage the grant permissions */
   const isAdmin = useCurrentRoom((v) => v.isAdmin);
   const admins = useCurrentRoom((v) => v.admins);
 
@@ -21,20 +21,19 @@ const MessageItem = ({ message, handleAdmin, handleLike, handleDelete }) => {
   const isAuthor = auth.currentUser.uid === author.uid;
   const canGrantAdmin = isAdmin && !isAuthor;
 
-  // const to manage the like functionality
+  /** const to manage the like functionality */
   const isMobile = useMediaQuery("(max-width: 992px)");
-  // const [selfRef, isHovered] = useHover();
-  
-  //if likes exist and getting the keys of likes object and finding if current user has liked the message
+  const [selfRef, isHovered] = useHover();
+
+  /** if likes exist and getting the keys of likes object and finding if current user has liked the message */
   const isLiked = likes && Object.keys(likes).includes(auth.currentUser.uid);
-  // const canShowIcons = isMobile || isHovered;
+  const canShowIcons = isMobile || isHovered;
 
   return (
-    // <li
-    //   className={`padded mb-1 cursor-pointer ${isHovered ? "bg-black-02" : ""}`}
-    //   ref={selfRef}
-    // >
-    <li className="padded mb-1">
+    <li
+      className={`padded mb-1 cursor-pointer ${isHovered ? "bg-black-02" : ""}`}
+      ref={selfRef}
+    >
       <div className="d-flex align-items-center font-bolder mb-1">
         <PresenceDot uid={author.uid} />
         <ProfileAvatar
@@ -59,8 +58,7 @@ const MessageItem = ({ message, handleAdmin, handleLike, handleDelete }) => {
         <TimeAgo date={createdAt} className="font-normal text-black-45 ml-2" />
         <IconBtnControl
           {...(isLiked ? { color: "red" } : {})}
-          // isVisible={canShowIcons}
-          isVisible
+          isVisible={canShowIcons}
           iconName="heart"
           tooltip="Like this message"
           onClick={() => handleLike(message.id)}
@@ -68,8 +66,7 @@ const MessageItem = ({ message, handleAdmin, handleLike, handleDelete }) => {
         />
         {isAuthor && (
           <IconBtnControl
-            // isVisible={canShowIcons}
-            isVisible
+            isVisible={canShowIcons}
             iconName="close"
             tooltip="Delete this message"
             onClick={() => handleDelete(message.id)}
