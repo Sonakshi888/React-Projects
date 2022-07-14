@@ -40,7 +40,7 @@ const AttachmentBtnModal = ({ afterUpload }) => {
 
       const uploadSnapshots = await Promise.all(uploadPromises); //getting snapshot of uploaded promises
 
-      /** mapping the snapshots to get proper needed data */
+      /** mapping the snapshots to get proper needed data to be saved in to the database */
       const shapePromises = uploadSnapshots.map(async (snap) => {
         return {
           contentType: snap.metadata.contentType,
