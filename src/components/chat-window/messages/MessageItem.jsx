@@ -8,9 +8,24 @@ import { useCurrentRoom } from "../../../context/current-room.context";
 import { auth } from "../../../misc/firebase";
 import IconBtnControl from "./IconBtnControl";
 import { useMediaQuery, useHover } from "../../../misc/custom-hooks";
+import ImgBtnModal from "./ImgBtnModal";
+
+/** function to render files on messages */
+const renderFileMessage = (file) => {
+  //if uploaded file is img
+  if (file.contentType.includes("image")) {
+    return (
+      <div className="height-220">
+        <ImgBtnModal src={file.url} fileName={file.name} />
+      </div>
+    );
+  }
+
+  return <a href={file.url}>Download {file.name}</a>;
+};
 
 const MessageItem = ({ message, handleAdmin, handleLike, handleDelete }) => {
-  const { author, createdAt, text, likes, likeCount } = message;
+  const { author, createdAt, text, likes, likeCount, file } = message;
 
   /** consts to manage the grant permissions */
   const isAdmin = useCurrentRoom((v) => v.isAdmin);
@@ -74,7 +89,8 @@ const MessageItem = ({ message, handleAdmin, handleLike, handleDelete }) => {
         )}
       </div>
       <div>
-        <span className="word-break-all">{text}</span>
+        {text && <span className="word-break-all">{text}</span>}
+        {file && renderFileMessage(file)}
       </div>
     </li>
   );
