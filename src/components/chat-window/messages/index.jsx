@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router";
 import { Alert } from "rsuite";
-import { database } from "../../../misc/firebase";
+import { database, storage } from "../../../misc/firebase";
 import { transformToArrayWithId } from "../../../misc/helpers";
 import MessageItem from "./MessageItem";
 import { auth } from "../../../misc/firebase";
@@ -90,7 +90,7 @@ const Messages = () => {
 
   /** function to delete a message */
   const handleDelete = useCallback(
-    async (msgId) => {
+    async (msgId, file) => {
       if (!window.confirm("Delete this message?")) {
         return;
       }
@@ -116,12 +116,22 @@ const Messages = () => {
         updates[`/rooms/${chatId}/lastMessage`] = null;
       }
 
-      /** updating the database with update method */
+      /** updating the database with update method means actually deleting the msg from db */
       try {
         await database.ref().update(updates);
         Alert.info("Message Deleted!", 4000);
       } catch (err) {
-        Alert.error(err.message);
+        return Alert.error(err.message);
+      }
+
+      /** deleting a file from storage */
+      if (file) {
+        try {
+          const fileRef = storage.refFromURL(file.url);
+          await fileRef.delete();
+        } catch (err) {
+          Alert.error(err.message);
+        }
       }
     },
     [chatId, messages]
