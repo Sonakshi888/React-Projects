@@ -3,36 +3,54 @@ import { useCallback } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router";
-import { Alert } from "rsuite";
+import { Alert, Button } from "rsuite";
 import { database, storage } from "../../../misc/firebase";
 import { groupBy, transformToArrayWithId } from "../../../misc/helpers";
 import MessageItem from "./MessageItem";
 import { auth } from "../../../misc/firebase";
 
+const PAGE_SIZE = 15;
+const messagesRef = database.ref("/messages"); //getting ref of messages from database
+
 const Messages = () => {
   const { chatId } = useParams();
   const [messages, setMessages] = useState(null);
+
+  const [limit, setLimit] = useState(PAGE_SIZE);
+
   const isChatEmpty = messages && messages.length === 0;
   const canShowMessage = messages && messages.length > 0;
 
+  const loadMessages = useCallback(
+    (limitToLast) => {
+      messagesRef.off();
+
+      // adding realtime listener on value which gives snapshot of the whole data present in the room where room id is equal to chat id
+      //adding msg data to messages
+      messagesRef
+        .orderByChild("roomId")
+        .equalTo(chatId)
+        .limitToLast(limitToLast || PAGE_SIZE)
+        .on("value", (snap) => {
+          const data = transformToArrayWithId(snap.val());
+          setMessages(data);
+        });
+      setLimit((p) => p + PAGE_SIZE);
+    },
+    [chatId]
+  );
+
+  const onLoadMore = useCallback(() => {
+    loadMessages(limit);
+  }, [loadMessages, limit]);
+
   useEffect(() => {
-    const messagesRef = database.ref("/messages"); //getting ref of messages from database
-
-    // adding realtime listener on value which gives snapshot of the whole data present in the room where room id is equal to chat id
-    //adding msg data to messages
-    messagesRef
-      .orderByChild("roomId")
-      .equalTo(chatId)
-      .on("value", (snap) => {
-        const data = transformToArrayWithId(snap.val());
-        setMessages(data);
-      });
-
+    loadMessages();
     // unsubscribing to the subscription using clean up function for useEffect
     return () => {
       messagesRef.off("value");
     };
-  }, [chatId]);
+  }, [loadMessages]);
 
   //function to handle admin permissions
   const handleAdmin = useCallback(
@@ -168,6 +186,13 @@ const Messages = () => {
 
   return (
     <ul className="msg-list custom-scroll">
+      {messages && messages.length >= 1 && (
+        <li className="text-center mt-2 mb-2">
+          <Button color="green" onClick={onLoadMore}>
+            Load More
+          </Button>
+        </li>
+      )}
       {isChatEmpty && <li>No messages yet!</li>}
       {canShowMessage && renderMessages()}
     </ul>
