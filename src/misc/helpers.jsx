@@ -52,3 +52,26 @@ export async function getUserUpdates(userId, keyToUpdate, value, db) {
   });
   return updates;
 }
+
+/** function to group messages by dates */
+
+/** usage of this function
+ *
+ * groupBy(messages, (msgItem) => msgItem.createdAt)
+ *
+ */
+export function groupBy(array, groupingKeyFn) {
+  return array.reduce((result, item) => {
+    const groupingKey = groupingKeyFn(item); //passing each item to the groaupingkeyFn
+
+    //initialize result[groupingKey] if it does not exist
+    if (!result[groupingKey]) {
+      result[groupingKey] = [];
+    }
+
+    //pushing the item to the key
+    result[groupingKey].push(item);
+
+    return result;
+  }, {});
+}
